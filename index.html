@@ -6,6 +6,7 @@
     <title>Weather Information</title>
     <link rel="stylesheet" href="./css/main.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./js/config.js"></script>
     <script src="./js/main.js" defer></script>
 </head>
 <body>
@@ -14,6 +15,59 @@
             <li><a href="#" class="active">Weather</a></li>
             <li><a href="./exchange.html">Currency Exchang</a></li>
         </ul>
+    </div>
+    <div class="weather">
+        
+        <div class="city-selection">
+            <label for="Alberta">Change City:</label>
+            <select name="Alberta" id="alberta">
+              <optgroup label="Alberta">
+                <option value="Calgary">Calgary</option>
+                <option value="Airdrie">Airdrie</option>
+                <option value="Beaumont">Beaumont</option>
+                <option value="Brooks">Brooks</option>
+                <option value="Camrose">Camrose</option>
+                <option value="Chestermere">Chestermere</option>
+                <option value="Cold Lake">Cold Lake</option>
+                <option value="Edmonton">Edmonton</option>
+                <option value="Fort Saskatchewan">Fort Saskatchewan</option>
+                <option value="Grande Prairie">Grande Prairie</option>
+                <option value="Lacombe">Lacombe</option>
+                <option value="Leduc">Leduc</option>
+                <option value="Lethbridge">Lethbridge</option>
+                <option value="Lloydminster">Lloydminster</option>
+                <option value="Medicine Hat">Medicine Hat</option>
+                <option value="Red Deer">Red Deer</option>
+                <option value="Spruce Grove">Spruce Grove</option>
+                <option value="St. Albert">St. Albert</option>
+                <option value="Wetaskiwin">Wetaskiwin</option>
+              </optgroup>
+            </select>
+            <button id="refresh-weather" class="refresh-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 4v6h-6"></path>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="weather-content">
+            <div class="weather-image">
+                <img src="./img/weather.png" alt="Weather Image Placeholder">
+            </div>
+            <div class="weather-info">
+                <h1>Placeholder</h1>
+                <h3>Placeholder</h3>
+                <h4>Placeholder</h4>
+                <p>Placeholder</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-content">
+        <footer>
+            <p>© <span class="current-date">2025</span> Fadi Yousif. All Rights Reserved.</p>
+        </footer>
     </div>
 </body>
 </html>

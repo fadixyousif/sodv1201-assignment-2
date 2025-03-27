@@ -8,7 +8,6 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 25px;
-    background-color: #000000;
 }
 
 /* Navigation CSS */
@@ -18,7 +17,7 @@ html, body {
     align-items: center;
     list-style-type: none;
     overflow: hidden;
-    background-color: gray;
+    background-color: #333;
     padding: 10px;
 }
 .navigation > ul > li {
@@ -37,5 +36,122 @@ html, body {
 }
 
 .navigation > ul > li > a:hover {
-    background-color: #111;
+    background-color: #0a3525;
+}
+
+.weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    background-color: #f1f1f1;
+    padding: 50px;
+    margin-top: 3%;
+    width: 30%;
+    border: 5px solid #333;
+    border-radius: 30px;
+}
+
+/* City Selection and Refresh Button Styling */
+.city-selection {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.city-selection label {
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.weather select {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    width: 60%; /* Adjusted to make room for refresh button */
+}
+
+.refresh-btn {
+    background: #333;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background-color: #038857;
+}
+
+.refresh-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+}
+
+.weather > .weather-content > .weather-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    /* padding-bottom: 10px; */
+    padding-top: 25px;
+    /* margin-bottom: 10px; */
+    gap: 10px;
+    width: 50%;
+}
+
+.weather > .weather-content > .weather-image > img {
+    width: 128px;
+    height: 128px;
+}
+
+.weather > .weather-content > .weather-info > h1, h2, h3, h4, p {
+    text-align: center;
+    font-weight: bold;
+}
+
+.weather-info.error {
+    color: #d9534f;
+    text-align: center;
+}
+
+.weather-info.error h1 {
+    color: #d9534f;
+}
+
+.weather-info.error h2 {
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+/* Footer CSS */
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+.footer-content > footer {
+    margin-top: auto;   
+    background: #333;
+    color: white;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    width: 100%;
+}
+
+.footer-content > footer > p {
+    text-align: center;
 }
