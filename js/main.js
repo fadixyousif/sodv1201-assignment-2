@@ -10,7 +10,7 @@ $(function() {
             const cachedWeather = JSON.parse(localStorage.getItem('last_weather'));
 
             // If not forcing a refresh and cached data matches the selected city and province, use it
-            if (!forceRefresh && cachedWeather && cachedWeather.location.name === city && cachedWeather.location.region === province) {
+            if (!forceRefresh && cachedWeather && cachedWeather.city === city && cachedWeather.province === province) {
                 console.log('Using cached weather data:', cachedWeather);
 
                 // Update UI with cached data
@@ -30,17 +30,29 @@ $(function() {
                 // Parse the response data
                 const data = await response.json();
 
+                // Extract only the relevant weather details
+                const weatherDetails = {
+                    city: data.location.name,
+                    province: data.location.region,
+                    temperature: data.current.temp_c,
+                    humidity: data.current.humidity,
+                    windSpeed: data.current.wind_kph,
+                    condition: data.current.condition.text,
+                    icon: data.current.condition.icon,
+                    lastUpdated: data.location.localtime
+                };
+
                 // Check if the fetched data is different from the cached data
-                if (!cachedWeather || JSON.stringify(cachedWeather) !== JSON.stringify(data)) {
+                if (!cachedWeather || JSON.stringify(cachedWeather) !== JSON.stringify(weatherDetails)) {
                     // Store the new data in localStorage
-                    localStorage.setItem('last_weather', JSON.stringify(data));
-                    console.log('Weather data updated in localStorage:', data);
+                    localStorage.setItem('last_weather', JSON.stringify(weatherDetails));
+                    console.log('Weather data updated in localStorage:', weatherDetails);
                 } else {
                     console.log('Weather data is the same, no update needed.');
                 }
 
                 // Update UI with fetched data
-                updateWeatherUI(data);
+                updateWeatherUI(weatherDetails);
             } catch (error) {
                 // Handle errors and display error message
                 console.error('Error fetching weather data:', error);
@@ -59,15 +71,15 @@ $(function() {
         function updateWeatherUI(data) {
             // Replace the weather data in the UI
             $('.weather > .weather-content > .weather-image').html(`
-                <img src="${data.current.condition.icon.replace('64x64', '128x128')}" alt="${data.current.condition.text}">
+                <img src="${data.icon.replace('64x64', '128x128')}" alt="${data.condition}">
             `);
 
             $('.weather > .weather-content > .weather-info').html(`
-                <h1>${data.location.name}</h1>
-                <h2>${data.current.condition.text}</h2>
-                <h3>${data.current.temp_c}°C</h3>
-                <p>Humidity: ${data.current.humidity}% | Wind: ${data.current.wind_kph} km/h</p>
-                <p>Last Updated: ${data.location.localtime}</p>
+                <h1>${data.city}</h1>
+                <h2>${data.condition}</h2>
+                <h3>${data.temperature}°C</h3>
+                <p>Humidity: ${data.humidity}% | Wind: ${data.windSpeed} km/h</p>
+                <p>Last Updated: ${data.lastUpdated}</p>
             `);
         }
 
