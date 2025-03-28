@@ -9,13 +9,57 @@
     <script src="./js/config.js"></script>
     <script src="./js/main.js" defer></script>
 </head>
-<body>
+<body class="exchange-page">
     <div class="navigation">
         <ul>
             <li><a href="./index.html">Weather</a></li>
             <li><a href="#" class="active">Currency Exchang</a></li>
         </ul>
     </div>
+
+    <div class="currency-exchange">
+        <div class="currency-selection">
+            <label for="fromCurrency">From:</label>
+            <select id="fromCurrency">
+                <optgroup label="Available Currencies">
+                    <!-- Options will be populated dynamically -->
+                </optgroup>
+            </select>
+
+            <label for="toCurrency">To:</label>
+            <select id="toCurrency">
+                <optgroup label="Available Currencies">
+                    <!-- Options will be populated dynamically -->
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="currency-selection">
+            <input type="number" id="amount" placeholder="Enter amount" min="0">
+            <button id="convert" class="convert-btn">
+                Convert
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="7 8 3 12 7 16"></polyline>
+                    <polyline points="17 8 21 12 17 16"></polyline>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="exchange-content">
+            <div class="exchange-info">
+                <h1>Currency Exchange</h1>
+                <h3>Live Rates</h3>
+                <div id="exchange-rate-display">
+                    <!-- Exchange rate will be displayed dynamically -->
+                </div>
+                <div id="result">
+                    <p>Converted amount will appear here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
     <div class="footer-content">
         <footer>
