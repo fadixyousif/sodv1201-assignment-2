@@ -2,26 +2,27 @@ $(function() {
     // check if the page is weather page
     if ($('.weather-page').length > 0) {
         // Function to fetch and display weather data
-        async function fetchWeatherData(city, province) {
+        async function fetchWeatherData(city, province, forceRefresh = false) {
             // Clear any previous error messages
             $('.weather-info').removeClass('error');
 
             // Check if data exists in localStorage
-            const cachedWeather = localStorage.getItem(`weather_${city}_${province}`);
-            if (cachedWeather) {
-                const data = JSON.parse(cachedWeather);
-                console.log('Using cached weather data:', data);
+            const cachedWeather = JSON.parse(localStorage.getItem('last_weather'));
+
+            // If not forcing a refresh and cached data matches the selected city and province, use it
+            if (!forceRefresh && cachedWeather && cachedWeather.location.name === city && cachedWeather.location.region === province) {
+                console.log('Using cached weather data:', cachedWeather);
 
                 // Update UI with cached data
-                updateWeatherUI(data);
+                updateWeatherUI(cachedWeather);
                 return;
             }
 
             try {
-                // fetch weather data from API with error handling and hidden api key
+                // Fetch weather data from API with error handling and hidden API key
                 const response = await fetch(`https://api.weatherapi.com/v1/current.json?q=${city}, ${province}&key=${weather_config.key}`);
                 
-                // check if response is not ok them throw an error
+                // Check if response is not OK, then throw an error
                 if (!response.ok) {
                     throw new Error('Weather data could not be retrieved');
                 }
@@ -29,8 +30,14 @@ $(function() {
                 // Parse the response data
                 const data = await response.json();
 
-                // Store data in localStorage
-                localStorage.setItem(`weather_${city}_${province}`, JSON.stringify(data));
+                // Check if the fetched data is different from the cached data
+                if (!cachedWeather || JSON.stringify(cachedWeather) !== JSON.stringify(data)) {
+                    // Store the new data in localStorage
+                    localStorage.setItem('last_weather', JSON.stringify(data));
+                    console.log('Weather data updated in localStorage:', data);
+                } else {
+                    console.log('Weather data is the same, no update needed.');
+                }
 
                 // Update UI with fetched data
                 updateWeatherUI(data);
@@ -38,7 +45,7 @@ $(function() {
                 // Handle errors and display error message
                 console.error('Error fetching weather data:', error);
                 
-                // display error message in the UI
+                // Display error message in the UI
                 $('.weather > .weather-content > .weather-info').html(`
                     <h1>Error</h1>
                     <h2>Unable to fetch weather data</h2>
@@ -75,7 +82,7 @@ $(function() {
         // Refresh button click handler
         $('#refresh-weather').on('click', function() {
             const currentCity = $('#alberta').val();
-            fetchWeatherData(currentCity, province);
+            fetchWeatherData(currentCity, province, true); // Force refresh
         });
 
         // City change handler
