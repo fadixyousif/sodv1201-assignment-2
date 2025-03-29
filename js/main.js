@@ -377,7 +377,6 @@ $(function() {
         $toCurrency.on('change', function () {
             // Check rate limiting (e.g., 30 seconds = 30000 ms)
             if (isButtonRateLimited('currency_to_change_rate_limit', 30000)) {
-                console.log('Rate limit active for "to currency" change. Please wait.');
                 showNotification('Warning', 'You can only change the "to currency" once every 30 seconds. Please wait.', 'warning');
                 return;
             }
