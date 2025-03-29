@@ -1,4 +1,29 @@
 $(function() {
+
+    // Utility function to check rate limiting
+    function isButtonRateLimited(key, limitInMs) {
+        const lastActionTime = localStorage.getItem(key);
+        const now = Date.now();
+
+        if (lastActionTime && now - lastActionTime < limitInMs) {
+            return true; // Rate limit is active
+        }
+
+        // Update the last action time
+        localStorage.setItem(key, now);
+        return false; // Rate limit is not active
+    }
+
+    function showNotification(title, message, type = 'error', position = 'right top', duration = 3000) {
+        new Notify({
+            status: type, // 'success', 'error', 'warning', or 'info'
+            title: title,
+            text: message,
+            effect: 'fade', // Animation effect
+            position: position // Position of the notification (e.g., 'right top', 'left bottom')
+        });
+    }
+
     // check if the page is weather page
     if ($('.weather-page').length > 0) {
         // Function to fetch and display weather data
@@ -11,8 +36,6 @@ $(function() {
 
             // If not forcing a refresh and cached data matches the selected city and province, use it
             if (!forceRefresh && cachedWeather && cachedWeather.city === city && cachedWeather.province === province) {
-                console.log('Using cached weather data:', cachedWeather);
-
                 // Update UI with cached data
                 updateWeatherUI(cachedWeather);
                 return;
@@ -46,9 +69,6 @@ $(function() {
                 if (!cachedWeather || JSON.stringify(cachedWeather) !== JSON.stringify(weatherDetails)) {
                     // Store the new data in localStorage
                     localStorage.setItem('last_weather', JSON.stringify(weatherDetails));
-                    console.log('Weather data updated in localStorage:', weatherDetails);
-                } else {
-                    console.log('Weather data is the same, no update needed.');
                 }
 
                 // Update UI with fetched data
@@ -92,13 +112,25 @@ $(function() {
         fetchWeatherData(initialCity, province);
 
         // Refresh button click handler
-        $('#refresh-weather').on('click', function() {
+        $('#refresh-weather').on('click', function () {
+            // Check rate limiting (e.g., 1 minute = 60000 ms)
+            if (isButtonRateLimited('weather_refresh_rate_limit', 60000)) {
+                showNotification('Warning', 'You can only refresh the weather once per minute. Please wait.', 'warning');
+                return;
+            }
+
             const currentCity = $('#alberta').val();
             fetchWeatherData(currentCity, province, true); // Force refresh
         });
 
         // City change handler
-        $('#alberta').on('change', function() {
+        $('#alberta').on('change', function () {
+            // Check rate limiting (e.g., 1 minute = 60000 ms)
+            if (isButtonRateLimited('weather_location_change_rate_limit', 60000)) {
+                showNotification('Warning', 'You can only change the weather location once per minute. Please wait.', 'warning');
+                return;
+            }
+
             const selectedCity = $(this).val();
             fetchWeatherData(selectedCity, province);
         });
@@ -125,8 +157,6 @@ $(function() {
             if (cachedRates) {
                 // Parse the cached data
                 const data = JSON.parse(cachedRates);
-                // Log the cached data for debugging
-                console.log('Using cached exchange rates:', data);
 
                 // Populate the dropdowns with cached data
                 populateDropdowns(data);
@@ -206,7 +236,6 @@ $(function() {
 
                 // Check if the current conversion matches the last one
                 if (lastConversion && lastConversion.fromCurrency === fromCurrency && lastConversion.toCurrency === toCurrency) {
-                    console.log('Using saved exchange rate:', lastConversion.rate);
                     rate = lastConversion.rate; // Use the saved exchange rate
                 } else {
                     // Fetch the latest exchange rate
@@ -271,9 +300,7 @@ $(function() {
                 localStorage.setItem('exchange_rates', JSON.stringify(data));
 
                 // Display the exchange rate
-                console.log('Using latest exchange rate:', rate);
             } catch (error) {
-                console.error('Error fetching exchange rate:', error);
 
                 // Fallback to cached data if available
                 const cachedRates = localStorage.getItem('exchange_rates');
@@ -290,7 +317,6 @@ $(function() {
                         rate = toRate / fromRate;
                     }
                     // Display the cached exchange rate
-                    console.log('Using cached exchange rate as fallback:', rate);
                 } else {
                     // If no cached data is available, display an error message
                     $('#exchange-rate-display').html('<p>Error fetching exchange rate</p>');
@@ -327,16 +353,38 @@ $(function() {
         });
     
         // Event listener for conversion
-        $convertButton.on('click', convertCurrency);
+        $convertButton.on('click', function () {
+            // Check rate limiting (e.g., 30 seconds = 30000 ms)
+            if (isButtonRateLimited('currency_convert_rate_limit', 30000)) {
+                showNotification('Warning', 'You can only convert currency once every 30 seconds. Please wait.', 'warning');
+                return;
+            }
+
+            convertCurrency(); // Perform the currency conversion
+        });
 
         // Modify event listeners to update the exchange rate dynamically
         $fromCurrency.on('change', function () {
-            updateExchangeRate(); // Only update the exchange rate
+            // Check rate limiting (e.g., 30 seconds = 30000 ms)
+            if (isButtonRateLimited('currency_from_change_rate_limit', 30000)) {
+                showNotification('Warning', 'You can only change the "from currency" once every 30 seconds. Please wait.', 'warning');
+                return;
+            }
+
+            updateExchangeRate(); // Update the exchange rate
         });
 
         $toCurrency.on('change', function () {
-            updateExchangeRate(); // Only update the exchange rate
+            // Check rate limiting (e.g., 30 seconds = 30000 ms)
+            if (isButtonRateLimited('currency_to_change_rate_limit', 30000)) {
+                console.log('Rate limit active for "to currency" change. Please wait.');
+                showNotification('Warning', 'You can only change the "to currency" once every 30 seconds. Please wait.', 'warning');
+                return;
+            }
+
+            updateExchangeRate(); // Update the exchange rate
         });
     
     }
 });
+
