@@ -20,7 +20,9 @@ $(function() {
             title: title,
             text: message,
             effect: 'fade', // Animation effect
-            position: position // Position of the notification (e.g., 'right top', 'left bottom')
+            position: position, // Position of the notification (e.g., 'right top', 'left bottom')
+            autotimeout: duration, // Duration in milliseconds
+            autoclose: true
         });
     }
 
@@ -43,7 +45,7 @@ $(function() {
 
             try {
                 // Fetch weather data from API with error handling and hidden API key
-                const response = await fetch(`https://api.weatherapi.com/v1/current.json?q=${city}, ${province}&key=${weather_config.key}`);
+                const response = await fetch(`https://api.weatherapi.com/v1/current.json?q=${city}, ${province}&key=${api.weather.key}`);
                 
                 // Check if response is not OK, then throw an error
                 if (!response.ok) {
@@ -114,7 +116,7 @@ $(function() {
         // Refresh button click handler
         $('#refresh-weather').on('click', function () {
             // Check rate limiting (e.g., 1 minute = 60000 ms)
-            if (isButtonRateLimited('weather_refresh_rate_limit', 60000)) {
+            if (isButtonRateLimited('weather_location_change_rate_limit', 60000)) {
                 showNotification('Warning', 'You can only refresh the weather once per minute. Please wait.', 'warning');
                 return;
             }
@@ -166,7 +168,7 @@ $(function() {
             // try with error handling
             try {
                 // Fetch exchange rates from API with error handling and hidden api key
-                const response = await fetch(`https://v6.exchangerate-api.com/v6/${exchange_config.key}/latest/USD`);
+                const response = await fetch(`https://v6.exchangerate-api.com/v6/${api.exchange.key}/latest/USD`);
 
                 // check if response is not ok them throw an error
                 if (!response.ok) {
@@ -239,7 +241,7 @@ $(function() {
                     rate = lastConversion.rate; // Use the saved exchange rate
                 } else {
                     // Fetch the latest exchange rate
-                    const response = await fetch(`https://v6.exchangerate-api.com/v6/${exchange_config.key}/latest/${fromCurrency}`);
+                    const response = await fetch(`https://v6.exchangerate-api.com/v6/${api.exchange.key}/latest/${fromCurrency}`);
                     // check if response is not ok them throw an error
                     if (!response.ok) {
                         throw new Error('Exchange data could not be retrieved');
@@ -277,7 +279,7 @@ $(function() {
 
             try {
                 // Fetch the latest exchange rate for the selected currencies
-                const response = await fetch(`https://v6.exchangerate-api.com/v6/${exchange_config.key}/latest/${$fromCurrency.val()}`);
+                const response = await fetch(`https://v6.exchangerate-api.com/v6/${api.exchange.key}/latest/${$fromCurrency.val()}`);
                 
                 // Check if the response is not OK, then throw an error
                 if (!response.ok) {
